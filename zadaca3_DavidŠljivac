@@ -1,0 +1,116 @@
+Zad1
+
+public class Mail{
+        public string Subject {get;set;}
+        public string Content {get;set;}
+        public string Recipient {get;set;}
+        public string Attachments {get;set;}
+    }
+    
+public class IMailConstructor{
+    public IMailConstructor AddSubject(string subject);
+    public IMailConstructor AddContent(string content);
+    public IMailConstructor AddRecipient(string recipient);
+    public IMailConstructor AddAttachments(string attachments);
+    public IMailConstructor Reset();
+    public Mail Build();
+}
+
+    public class MailConstructor : IMailConstructor{
+        Mail mail;
+        public MailConstructor() {
+            mail = new Mail();
+        }
+        
+        public IMailConstructor AddSubject(string subject)
+        {
+            mail.Subject=subject;
+            return this;
+        }
+        public IMailConstructor AddContent(string content)
+        {
+            mail.Content=content;
+            return this;
+        }
+        public IMailConstructor AddRecipient(string recipient){
+            mail.Recipient= recipient;
+            return this;
+        }
+        
+        public IMailConstructor AddAttachments(string attachments)
+        {
+            mail.Attachments=attachments;
+            return this;
+        }
+        
+        public IMailConstructor Reset()
+        {
+            mail = new Mail();
+            return this;
+        }
+        public Mail Build(){
+            return mail;
+        }
+    }
+
+    public class SMTP {
+        IMailConstructor mailConstructor;
+        public SMTP(IMailConstructor mailConstructor) {
+            this.mailConstructor = mailConstructor;
+        }
+
+        public void SendNoReplyMail(){
+            mailConstructor.AddSubject("No Reply").AddContent("Hello World").Construct();
+            
+        }
+    }
+
+public static class ClientCode
+{
+    public static void Run(){
+        STMP stmp = new STMP(new MailConstructor());
+        stmp.SendNoReplyMail();
+    }
+}
+
+Zad2
+
+public class WebElement{
+        string name;
+        public WebElement(string name){
+            Console.WriteLine($"Found {name}");
+            this.name = name;
+        }
+        public void Click(){
+            Console.WriteLine($"Clicked {name}");
+        }
+    }
+    
+public interface LoginPage{
+        public WebElement loginButton();
+        public WebElement usernameInput();
+        public WebElement passwordInput();
+}
+
+public class ChromeLoginPage : LoginPage
+{
+    public WebElement loginButton(){
+        return new WebElement("LoginButton");
+    }
+    public WebElement usernameInput(){
+        return new WebElement("UserInput");
+    }
+    public WebElement passwordInput(){
+        return new WebElement("PasswordInput");
+    }
+}
+
+public abstract class LoginPageFactory{
+        public abstract LoginPage CreatePage();
+    }
+    
+public class ChromeLoginPageFactory : LoginPageFactory{
+    public override LoginPage CreatePage(){
+        return new ChromeLoginPage();
+    }
+}
